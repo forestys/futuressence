@@ -26,14 +26,14 @@
 #'
 futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {
   # librairies necessaires
-  library(raster)
-  library(sp)
-  library(sf)
-  library(SpatialTools)
-  library(rgdal)
-  library(gam)
-  library(dplyr)
-  library(ggrepel)
+  # library(raster)
+  # library(sp)
+  # library(sf)
+  # library(SpatialTools)
+  # library(rgdal)
+  # library(gam)
+  # library(dplyr)
+  # library(ggrepel)
 
   # ETAPE 1 ###################################################################################
   # Import de la base de calcul
@@ -126,7 +126,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     rast = raster(listacces[i])
     projection(rast) = projLII
     tableraster[,i] = extract(x=rast,y=coord)
-    print(paste0(Sys.time()," - ",listnom[i]))
+    print(paste0(Sys.time()," - ", listnom[i]))
   }
 
   # Quand ph_terrain est non vide alors remplacer ph_lerfob par ph_terrain
@@ -194,7 +194,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     rast = raster(listacces[i])
     projection(rast) = projLII
     tableraster[,i] = extract(x=rast,y=coord)
-    print(paste0(Sys.time()," - ",listnom[i]))
+    print(paste0(Sys.time()," - ", listnom[i]))
   }
 
   # Quand et_terrain est non vide alors remplacer et_lerfob par et_terrain
@@ -229,7 +229,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     rast = raster(listacces[i])
     projection(rast) = projLII
     tableraster[,i] = extract(x=rast,y=coord)
-    print(paste0(Sys.time()," - ",listnom[i]))
+    print(paste0(Sys.time()," - ", listnom[i]))
   }
 
   # Quand ep_terrain est non vide alors remplacer ep_lerfob par ep_terrain
@@ -337,7 +337,6 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   # calcul  du BHE (RU, DE et ETR)
 
   for (mois in 1:12) {
-    print(mois)
     prec8610_mois <- base[ , paste0("prec_8610_", mois)]
     prec4665_mois <- base[ , paste0("prec_4665_", mois)]
     etp8610_mois <- base[ , paste0("etp_8610_", mois)]
@@ -427,7 +426,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   names(out) <- species
 
   for (sp in species) {
-    print(sp)
+    print(paste0(Sys.time()," - Calcul present/futur pour l'essence : ", sp))
     # on evalue l expression du gam
     txt <- paste0(ifelse(sp %in% c("fasy","piab","pisy","qupe","abal","acca","acmo","acop","acpl","acps","algl","bepe","cabe","casa","fran","frex","piha","prav","quil","qupu",
                                    "quro","rops","saal","saca","saci","soar","soau","soto","tico","tipl","ulmi"), " s(tmoy_an,4) +",""),
@@ -507,7 +506,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     out[[sp]]$mf <- median(values(Predsp_f), na.rm=TRUE)
     # Ratio futur sur present
     fsurp <- Predsp_f / Predsp_p
-    out[[sp]]$g <- fsurfp
+    out[[sp]]$g <- fsurp
     # Save en tif
     # writeRaster(fsurp, filename = paste0(rep_projet, "/tendance_",  sp, ".tif"), format="GTiff", overwrite=TRUE)
   }

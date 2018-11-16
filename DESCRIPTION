@@ -1,9 +1,14 @@
 Package: futuressence
+Type: Package
 Title: What the Package Does (one line, title case)
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.5.1)
-License: What license is it under?
+Date: 2018-11-16
+Imports: raster, sp, sf, SpatialTools, rgdal, gam, dplyr, ggrepel
+Authors@R: person("Pascal", "Obstetar", email = "pascal.obstetar@gmail.com", role = c("aut", "cre"))
+Maintainer: The package maintainer <pascal.obstetar@gmail.com>
+Description: Calcul du futur et du present des especes francaises.
+URL: https://github.com/pobsteta/gftools
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.1
