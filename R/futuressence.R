@@ -426,7 +426,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   names(out) <- species
 
   for (sp in species) {
-    print(paste0(Sys.time()," - Calcul present/futur pour l'essence : ", sp))
+    print(paste0(Sys.time()," - Calcul pour l'essence : ", sp))
     # on evalue l expression du gam
     txt <- paste0(ifelse(sp %in% c("fasy","piab","pisy","qupe","abal","acca","acmo","acop","acpl","acps","algl","bepe","cabe","casa","fran","frex","piha","prav","quil","qupu",
                                    "quro","rops","saal","saca","saci","soar","soau","soto","tico","tipl","ulmi"), " s(tmoy_an,4) +",""),
