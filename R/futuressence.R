@@ -77,7 +77,6 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   rum_lerfob <- paste0(rep_data, "/modeles_distrib/variables/lorraine/rumlor50/hdr.adf")
   # Extraction des donnees terrain de RUM (fichier vecteur rasterise au format tif)
   rum_terrain <- paste0(rep_projet, "/Mesures/RUM.tif")
-
   listacces <- c(rum_lerfob, rum_terrain)
   listnom <- c( "rum_lerfob", "rum_terrain")
 
@@ -112,12 +111,8 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
 
   # Extraction des donnees terrain de pH (fichier vecteur rasterise au format tif)
   ph_terrain <- paste0(rep_projet, "/Mesures/PH.tif")
-
   listacces <- c(ph_lerfob, ph_terrain)
-  listacces
-
   listnom <- c( "ph_lerfob", "ph_terrain")
-  listnom
 
   tableraster <- as.data.frame(matrix(data = NA, nrow = nrow(base), ncol = length(listnom)))
   colnames(tableraster) <- listnom
@@ -146,12 +141,8 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   cn_lerfob <- paste0(rep_data, "/modeles_distrib/variables/lorraine/cn_50_lor_cor/hdr.adf")
   # Extraction des donn?es terrain dd'eng. temp. (fichier vecteur rast?ris? au format tif)
   cn_terrain <- paste0(rep_projet, "/Mesures/CN.tif")
-
   listacces <- c(cn_lerfob, cn_terrain)
-  listacces
-
   listnom <- c("cn_lerfob", "cn_terrain")
-  listnom
 
   tableraster <- as.data.frame(matrix(data = NA, nrow = nrow(base), ncol = length(listnom)))
   colnames(tableraster) <- listnom
@@ -180,13 +171,8 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   et_lerfob <- paste0(rep_data, "/modeles_distrib/variables/lorraine/modeleetbon/hdr.adf")
   # Extraction des donn?es terrain d'eng. temp. (fichier vecteur rast?ris? au format tif)
   et_terrain <- paste0(rep_projet, "/Mesures/ET.tif")
-
   listacces <- c(et_lerfob, et_terrain)
-  listacces
-
   listnom <- c("et_lerfob", "et_terrain")
-  listnom
-
   tableraster <- as.data.frame(matrix(data = NA, nrow = nrow(base), ncol = length(listnom)))
   colnames(tableraster) <- listnom
 
@@ -214,13 +200,8 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   ep_lerfob <- paste0(rep_data, "/modeles_distrib/variables/france1km/ep_ess2/hdr.adf")
   # Extraction des donn?es terrain d'eng. perm. (fichier vecteur rast?ris? au format tif)
   ep_terrain <- paste0(rep_projet, "/Mesures/EP.tif")
-
   listacces <- c(ep_lerfob, ep_terrain)
-  listacces
-
   listnom <- c("ep_lerfob", "ep_terrain")
-  listnom
-
 
   tableraster <- as.data.frame(matrix(data = NA,nrow = nrow(base),ncol = length(listnom)))
   colnames(tableraster) <- listnom
@@ -256,13 +237,12 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
       for (mois in 1:12 ) {
         nomvar <- paste0(var, "8610_", mois)
         PATH_VAR <- paste0(rep_clim, "/Digitalis_v1/", var, "v1/", nomvar, "/w001001.adf")
-        print(PATH_VAR)
         col <- dim(base)[2] + 1
         rast <- raster(PATH_VAR, sp=TRUE)
         projection(rast) <- projLII
         base[,col] <- extract(x = rast, y = coord)
         colnames(base)[col] = nomvar
-        print(paste0(Sys.time()," - ", var))
+        print(paste0(Sys.time()," - ", var, " du mois ", mois, "/12."))
      }
   }
 
@@ -424,9 +404,10 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
   # Boucle sur les especes
   out <- as.list(species)
   names(out) <- species
+  nb <- 1
 
   for (sp in species) {
-    print(paste0(Sys.time()," - Calcul pour l'essence : ", sp))
+    print(paste0(Sys.time()," - Calcul pour l'essence : ", sp, " (", nb, "/", length(species), ")."))
     # on evalue l expression du gam
     txt <- paste0(ifelse(sp %in% c("fasy","piab","pisy","qupe","abal","acca","acmo","acop","acpl","acps","algl","bepe","cabe","casa","fran","frex","piha","prav","quil","qupu",
                                    "quro","rops","saal","saca","saci","soar","soau","soto","tico","tipl","ulmi"), " s(tmoy_an,4) +",""),
@@ -507,6 +488,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     # Ratio futur sur present
     fsurp <- Predsp_f / Predsp_p
     out[[sp]]$graphe <- fsurp
+    nb <- nb + 1
     # Save en tif
     # writeRaster(fsurp, filename = paste0(rep_projet, "/tendance_",  sp, ".tif"), format="GTiff", overwrite=TRUE)
   }
@@ -530,7 +512,6 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     xlab(label = "Présent") + ylab(label = "Futur") +
     ggtitle("Stressogramme présent-futur")
   p1
-
 
   turn <- list(out, p1)
   names(turn) <- c("species", "graphe")
