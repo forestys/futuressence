@@ -498,15 +498,15 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
     # Enregistremenet present (p) de la prediction futur (f)
     Predsp_p <- predict(RHS_p, gamdf, type = "response", progress = "text",
                           filename = file.path(dossier_save, paste0(sp, "_8610.tif")), overwrite=TRUE)
-    out[[sp]]$p <- Predsp_p
-    out[[sp]]$mp <- median(values(Predsp_p), na.rm=TRUE)
+    out[[sp]]$present <- Predsp_p
+    out[[sp]]$median_present <- median(values(Predsp_p), na.rm=TRUE)
     Predsp_f <- predict(RHS_f, gamdf, type = "response", progress = "text",
                           filename = file.path(dossier_save, paste0(sp, "_4665.tif")), overwrite=TRUE)
-    out[[sp]]$f <- Predsp_f
-    out[[sp]]$mf <- median(values(Predsp_f), na.rm=TRUE)
+    out[[sp]]$futur <- Predsp_f
+    out[[sp]]$median_futur <- median(values(Predsp_f), na.rm=TRUE)
     # Ratio futur sur present
     fsurp <- Predsp_f / Predsp_p
-    out[[sp]]$g <- fsurp
+    out[[sp]]$graphe <- fsurp
     # Save en tif
     # writeRaster(fsurp, filename = paste0(rep_projet, "/tendance_",  sp, ".tif"), format="GTiff", overwrite=TRUE)
   }
