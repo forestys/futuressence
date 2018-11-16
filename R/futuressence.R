@@ -533,7 +533,7 @@ futuressence <- function(fichier = NULL, enreg = F, rep_travail = "/tmp", rep_pr
 
 
   turn <- list(out, p1)
-  names(turn) <- c("Liste", "Graphe")
+  names(turn) <- c("species", "graphe")
   message("Calculation realized!")
   return(turn)
 
