@@ -32,7 +32,10 @@
 #' plot(res$species$quro$futur)
 #'
 #' # afficher le diffenretiel entre present et futur
-#' plot(res$species$quro$graphe)
+#' plot(res$species$quro$fsurp)
+#'
+#' # affciher le stressogramme present-futur
+#' res$stressogramme
 #'
 #'
 futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {
@@ -50,7 +53,10 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     species <- c("abal", "piab", "piha", "pisy", "acca", "acmo", "acop", "acpl", "acps", "algl", "bepu", "cabe", "fasy", "frex", "quil", "qupe", "qupu", "quro",
         "rops", "saal", "saca", "saci", "soar", "soau", "soto", "tico", "tipl", "ulgl", "ulmi", "bepe", "fran", "prav", "casa")
 
-    # Se mettre dans le repertoire de travail
+    # Se mettre dans le repertoire de travail, le cree si necessaire
+    if (!dir.exists(rep_travail)) {
+      dir.create(rep_travail, showWarnings = TRUE, recursive = TRUE, mode = "0777")
+    }
     setwd(rep_travail)
 
     ### calcul les grids a partir du shape
@@ -374,7 +380,11 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     r_ep <- rasterFromXYZ(base[, c("Xl2", "Yl2", "ep")], crs = crs_l2)
 
     # Enregistrement des resultats
-    dossier_save = paste0(rep_travail, "/2046_2065")  ############## A Changer
+    dossier_save = paste0(rep_travail, "/2046_2065")
+    if (!dir.exists(dossier_save)) {
+      dir.create(dossier_save, showWarnings = TRUE, recursive = TRUE, mode = "0777")
+      message(paste0("Directory is created in: ", dossier_save))
+    }
 
     # Boucle sur les especes
     out <- as.list(species)
@@ -456,8 +466,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
         out[[sp]]$futur <- Predsp_f
         out[[sp]]$median_futur <- median(values(Predsp_f), na.rm = TRUE)
         # Ratio futur sur present
-        fsurp <- Predsp_f/Predsp_p
-        out[[sp]]$graphe <- fsurp
+        out[[sp]]$fsurp <- Predsp_f/Predsp_p
         nb <- nb + 1
         # Save en tif writeRaster(fsurp, filename = paste0(rep_projet, '/tendance_', sp, '.tif'), format='GTiff', overwrite=TRUE)
     }
@@ -474,10 +483,10 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     p1 <- ggplot(dd, aes(x = p, y = f, label = essence)) + geom_abline(intercept = 0, color = "red") + geom_point(color = "red") + geom_label_repel() + scale_x_log10(limits = c(1e-10,
         1)) + scale_y_log10(limits = c(1e-10, 1)) + xlab(label = "Présent") + ylab(label = "Futur") + ggtitle("Stressogramme présent-futur")
-    p1
 
+    ## cree la liste des resultats
     turn <- list(out, p1)
-    names(turn) <- c("species", "graphe")
+    names(turn) <- c("species", "stressogramme")
     message("Calculation realized!")
     return(turn)
 
