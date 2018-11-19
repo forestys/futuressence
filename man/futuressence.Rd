@@ -2,14 +2,14 @@
 % Please edit documentation in R/futuressence.R
 \name{futuressence}
 \alias{futuressence}
-\title{Calcule les potentialités présentes et futures eds essences forestieres}
+\title{Calcule les potentialites presentes et futures eds essences forestieres}
 \usage{
-futuressence(fichier = NULL, enreg = F, rep_travail = "/tmp",
+futuressence(fgeo = NULL, enreg = F, rep_travail = tempdir(),
   rep_projet = NULL, rep_data = NULL, rep_clim = NULL,
   resol_grid = 10, buffer = 100)
 }
 \arguments{
-\item{fichier}{= fichier shape de l'étendue sur laquelle le calcul es t realise}
+\item{fgeo}{= fichier geographique (points, lignes ou polygones) de l'etendue sur laquelle le calcul est realise}
 
 \item{enreg}{= FASLE par defaut, specficie si des enregistrements intermediaires sont realises}
 
@@ -23,22 +23,41 @@ futuressence(fichier = NULL, enreg = F, rep_travail = "/tmp",
 
 \item{resol_grid}{= 10 par defaut, specifie la resolution des grilles generees}
 
-\item{buffer}{= 100 par defaut, specifie le buffer en unite de projection realise sur le shape avanta calcul}
+\item{buffer}{= 100 par defaut, specifie le buffer en unite de projection realise sur la zone de calcul}
 }
 \value{
 La fonction renvoie un tableau, des graphes et des cartes
 }
 \description{
-La fonction permet de calculer les présences futures des essences forestieres
+La fonction permet de calculer les presences futures des essences forestieres
 française
 }
 \examples{
 
-res <- futuressence(fichier="/home/pascal/Documents/forestys/data/groupe.shp",
-rep_travail= "/media/pascal/data2/forestys/tmp/",
-rep_projet="/media/pascal/data2/forestys/Essai/1_Pro_Silva_2018_5a",
-rep_data="/media/pascal/data2/forestys/Essai/2_Donnees",
-rep_clim="/media/pascal/data2/forestys/Climat"
-)
+### Calcul sur un shapefile multipolygones
+
+\dontrun{
+res <- futuressence(fgeo='/home/pascal/Documents/forestys/data/groupe.shp',
+rep_travail= '/media/pascal/data2/forestys/tmp/',
+rep_projet='/media/pascal/data2/forestys/Essai/1_Pro_Silva_2018_5a',
+rep_data='/media/pascal/data2/forestys/Essai/2_Donnees',
+rep_clim='/media/pascal/data2/forestys/Climat')
+
+# afficher la grille de la presence de l'espece fagus sylvatice (fasy)
+plot(res$species$fasy$present)
+
+# afficher la grille de la future presence de l'expece quercus robur (quro)
+plot(res$species$quro$futur)
+
+# afficher le diffenretiel entre present et futur
+plot(res$species$quro$fsurp)
+
+# afficher le stressogramme present-futur
+res$stressogramme
+}
+
+
+
+
 
 }

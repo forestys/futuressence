@@ -1,9 +1,9 @@
-#' Calcule les potentialités présentes et futures eds essences forestieres
+#' Calcule les potentialites presentes et futures eds essences forestieres
 #'
-#' @description La fonction permet de calculer les présences futures des essences forestieres
+#' @description La fonction permet de calculer les presences futures des essences forestieres
 #' française
 #'
-#' @param fgeo = fichier geographique (points, lignes ou polygones) de l'étendue sur laquelle le calcul est realise
+#' @param fgeo = fichier geographique (points, lignes ou polygones) de l'etendue sur laquelle le calcul est realise
 #' @param enreg = FASLE par defaut, specficie si des enregistrements intermediaires sont realises
 #' @param rep_travail = /tmp par defaut specifie le repertoire dans lequel sont enregistres les resultats intermediaire
 #' @param rep_projet = gewd() par dafaut, specifie le repertoire dans lequel les resultats sont enregistres
@@ -19,6 +19,7 @@
 #'
 #' ### Calcul sur un shapefile multipolygones
 #'
+#' \dontrun{
 #' res <- futuressence(fgeo='/home/pascal/Documents/forestys/data/groupe.shp',
 #' rep_travail= '/media/pascal/data2/forestys/tmp/',
 #' rep_projet='/media/pascal/data2/forestys/Essai/1_Pro_Silva_2018_5a',
@@ -36,7 +37,7 @@
 #'
 #' # afficher le stressogramme present-futur
 #' res$stressogramme
-#'
+#' }
 #'
 futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {
     # ETAPE 1 ################################################################################### Import de la base de calcul
@@ -44,11 +45,10 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     if (class(fgeo)[1] == "sf"){
       shape <- fgeo
     } else {
-      shape <- st_read(fgeo)
+      shape <- sf::st_read(fgeo)
     }
 
     # ajoute un buffer de 10m
-    # shape <- st_read(fgeo)
     shape <- shape %>% st_buffer(buffer)
 
     # parametrage projection lambert 2
@@ -67,6 +67,9 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     ### calcul les grids a partir du shape
     base <- as.data.frame(rasterToPoints(rasterize(as(shape, "Spatial"), raster(as(shape, "Spatial"), res = resol_grid), progress = "text")))[, 1:2]
+    # on supprime les data en doublon
+    base <- unique(base)
+    # on nomme les colonnes
     colnames(base) <- c("Xl2", "Yl2")
 
     if (enreg) {
@@ -90,11 +93,13 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     tableraster <- as.data.frame(matrix(data = NA, nrow = nrow(base), ncol = length(listnom)))
     colnames(tableraster) = listnom
 
+    head(tableraster)
+
     # Cree le raster pour le rum
     for (i in 1:length(listnom)) {
         rast <- raster(listacces[i])
         projection(rast) <- projLII
-        tableraster[, i] <- extract(x = rast, y = coord)
+        tableraster[, i] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
@@ -126,7 +131,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
         projection(rast) = projLII
-        tableraster[, i] = extract(x = rast, y = coord)
+        tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
@@ -155,7 +160,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
         projection(rast) = projLII
-        tableraster[, i] = extract(x = rast, y = coord)
+        tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
@@ -183,7 +188,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
         projection(rast) = projLII
-        tableraster[, i] = extract(x = rast, y = coord)
+        tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
@@ -212,7 +217,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
         projection(rast) = projLII
-        tableraster[, i] = extract(x = rast, y = coord)
+        tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
@@ -237,7 +242,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
             col <- dim(base)[2] + 1
             rast <- raster(PATH_VAR, sp = TRUE)
             projection(rast) <- projLII
-            base[, col] <- extract(x = rast, y = coord)
+            base[, col] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
             colnames(base)[col] = nomvar
             print(paste0(Sys.time(), " - ", var, " du mois ", mois, "/12."))
         }
@@ -488,7 +493,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     dd$f <- as.numeric(levels(dd$f))
 
     p1 <- ggplot(dd, aes(x = p, y = f, label = essence)) + geom_abline(intercept = 0, color = "red") + geom_point(color = "red") + geom_label_repel() + scale_x_log10(limits = c(1e-10,
-        1)) + scale_y_log10(limits = c(1e-10, 1)) + xlab(label = "Présent") + ylab(label = "Futur") + ggtitle("Stressogramme présent-futur")
+        1)) + scale_y_log10(limits = c(1e-10, 1)) + xlab(label = "Present") + ylab(label = "Futur") + ggtitle("Stressogramme present-futur")
 
     ## cree la liste des resultats
     turn <- list(out, p1)
