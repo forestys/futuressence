@@ -13,7 +13,16 @@
 #' @param buffer = 100 par defaut, specifie le buffer en unite de projection realise sur la zone de calcul
 #'
 #' @return La fonction renvoie un tableau, des graphes et des cartes
-#' @export
+#' @importFrom raster rasterize rasterFromXYZ rasterToPoints projection raster crs values
+#' @importFrom dplyr select
+#' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform st_buffer
+#' @importFrom ggplot2 ggtitle xlab ylab scale_x_log10 scale_y_log10 geom_point geom_abline ggplot aes
+#' @importFrom ggrepel geom_label_repel
+#' @importFrom stats complete.cases median setNames predict
+#' @importFrom gam gam
+#' @importFrom methods as
+#' @importFrom utils head read.csv read.table write.table
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #'
@@ -52,8 +61,8 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     shape <- shape %>% st_buffer(buffer)
 
     # parametrage projection lambert 2
-    projLII <- CRS("+init=epsg:27572")
-    projL93 <- CRS("+init=epsg:2154")
+    projLII <- crs("+init=epsg:27572")
+    projL93 <- crs("+init=epsg:2154")
 
     # essence disponible dans tab6var.csv
     species <- c("abal", "piab", "piha", "pisy", "acca", "acmo", "acop", "acpl", "acps", "algl", "bepu", "cabe", "fasy", "frex", "quil", "qupe", "qupu", "quro",
@@ -98,7 +107,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     # Cree le raster pour le rum
     for (i in 1:length(listnom)) {
         rast <- raster(listacces[i])
-        projection(rast) <- projLII
+        raster::projection(rast) <- projLII
         tableraster[, i] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
@@ -130,7 +139,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
-        projection(rast) = projLII
+        raster::projection(rast) = projLII
         tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
@@ -159,7 +168,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
-        projection(rast) = projLII
+        raster::projection(rast) = projLII
         tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
@@ -187,7 +196,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
-        projection(rast) = projLII
+        raster::projection(rast) = projLII
         tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
@@ -216,7 +225,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     for (i in 1:length(listnom)) {
         rast = raster(listacces[i])
-        projection(rast) = projLII
+        raster::projection(rast) = projLII
         tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
@@ -241,7 +250,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
             PATH_VAR <- paste0(rep_clim, "/Digitalis_v1/", var, "v1/", nomvar, "/w001001.adf")
             col <- dim(base)[2] + 1
             rast <- raster(PATH_VAR, sp = TRUE)
-            projection(rast) <- projLII
+            raster::projection(rast) <- projLII
             base[, col] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
             colnames(base)[col] = nomvar
             print(paste0(Sys.time(), " - ", var, " du mois ", mois, "/12."))
@@ -374,7 +383,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
 
     # lecture du fichier 'tab6var.csv' (contenant les donnees IFN de presence et les variables environnementales pour caler les modeles GAM).
     # setwd(paste0(rep_travail, 'E:/2_Donnees/modeles_distrib')
-    data <- read.table(paste0(rep_data, "/tab6var.csv"), h = TRUE, sep = ";", dec = ",")
+    data <- read.table(paste0(rep_data, "/tab6var.csv"), header = TRUE, sep = ";", dec = ",")
     data2 <- data[complete.cases(data), ]  # supprime les NA
 
     # TODO a remettre avec prolL2 defini au-dessus Definition de la projection Lambert 2 en language R
@@ -415,7 +424,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
             "acca", "acmo", "acpl", "acps", "bepu", "cabe", "casa", "rops", "saci", "soau", "tico", "ulgl"), " s(plac_CN_ssess1et2,4) +", ""), ifelse(sp %in% c("acop",
             "acpl", "bepe", "cabe", "quil", "qupu", "quro", "saci", "soar", "soto", "ulgl"), " s(plac_ET_ssess1et2,4) +", ""))
         # on remplace l expression txt dans la formule du gamdf
-        form <- paste("gamdf <- gam(data2[ , sp] ~", substr(txt, 1, nchar(txt) - 2), ",family = binomial, data = data2, na.action = na.omit)")
+        form <- paste("gamdf <<- gam(data2[ , sp] ~", substr(txt, 1, nchar(txt) - 2), ",family = binomial, data = data2, na.action = na.omit)")
         ### evlaue le gamdf
         eval(parse(text = substitute(form, list(form = form))))
 
@@ -492,7 +501,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     dd$p <- as.numeric(levels(dd$p))
     dd$f <- as.numeric(levels(dd$f))
 
-    p1 <- ggplot(dd, aes(x = p, y = f, label = essence)) + geom_abline(intercept = 0, color = "red") + geom_point(color = "red") + geom_label_repel() + scale_x_log10(limits = c(1e-10,
+    p1 <- ggplot(dd, ggplot2::aes(x = p, y = f, label = essence)) + geom_abline(intercept = 0, color = "red") + geom_point(color = "red") + geom_label_repel() + scale_x_log10(limits = c(1e-10,
         1)) + scale_y_log10(limits = c(1e-10, 1)) + xlab(label = "Present") + ylab(label = "Futur") + ggtitle("Stressogramme present-futur")
 
     ## cree la liste des resultats
