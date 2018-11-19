@@ -2,7 +2,7 @@
 % Please edit documentation in R/futuressence.R
 \name{futuressence}
 \alias{futuressence}
-\title{Calcule les potentialites presentes et futures eds essences forestieres}
+\title{Calcule les potentialites presentes et futures des essences forestieres}
 \usage{
 futuressence(fgeo = NULL, enreg = F, rep_travail = tempdir(),
   rep_projet = NULL, rep_data = NULL, rep_clim = NULL,
@@ -57,9 +57,4 @@ plot(res$species$quro$fsurp)
 # afficher le stressogramme present-futur
 res$stressogramme
 }
-
-
-
-
-
 }
