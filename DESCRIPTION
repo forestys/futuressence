@@ -1,0 +1,15 @@
+Package: futuressence
+Type: Package
+Title: Create carto and table for forests species
+Version: 0.1.0.9000
+Date: 2018-11-16
+Depends: R (>= 3.0.0), sf (>= 0.7-2), ggplot2 (>= 3.1.0), dplyr (>= 0.7.7), raster (>= 2.8-4), sp (>= 1.3-1), SpatialTools (>= 1.0.4), rgdal (>= 1.3-6), gam (>= 1.16), ggrepel (>= 0.8.0)
+Imports: devtools
+Authors@R: person("Pascal", "Obstetar", email = "pascal.obstetar@gmail.com", role = c("aut", "cre"))
+Maintainer: The package maintainer <pascal.obstetar@gmail.com>
+Description: Calcul du futur et du present des especes francaises.
+URL: https://github.com/forestys/futuressence
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
