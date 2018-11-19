@@ -19,7 +19,7 @@
 #'
 #' ### Calcul sur un shapefile multipolygones
 #'
-#' res <- futuressence(fichier='/home/pascal/Documents/forestys/data/groupe.shp',
+#' res <- futuressence(fgeo='/home/pascal/Documents/forestys/data/groupe.shp',
 #' rep_travail= '/media/pascal/data2/forestys/tmp/',
 #' rep_projet='/media/pascal/data2/forestys/Essai/1_Pro_Silva_2018_5a',
 #' rep_data='/media/pascal/data2/forestys/Essai/2_Donnees',
@@ -40,7 +40,12 @@
 #'
 futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {
     # ETAPE 1 ################################################################################### Import de la base de calcul
-    shape <- st_read(fgeo)
+
+    if (class(fgeo)[1] == "sf"){
+      shape <- fgeo
+    } else {
+      shape <- st_read(fgeo)
+    }
 
     # ajoute un buffer de 10m
     shape <- shape %>% st_buffer(buffer)
