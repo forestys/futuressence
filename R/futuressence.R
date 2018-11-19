@@ -34,7 +34,7 @@
 #' # afficher le diffenretiel entre present et futur
 #' plot(res$species$quro$fsurp)
 #'
-#' # affciher le stressogramme present-futur
+#' # afficher le stressogramme present-futur
 #' res$stressogramme
 #'
 #'
@@ -48,6 +48,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     }
 
     # ajoute un buffer de 10m
+    # shape <- st_read(fgeo)
     shape <- shape %>% st_buffer(buffer)
 
     # parametrage projection lambert 2
@@ -93,8 +94,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast <- raster(listacces[i])
         projection(rast) <- projLII
-        print(projLII)
-        tableraster[, i] <- raster::extract(x = rast, y = coord)
+        tableraster[, i] <- extract(x = rast, y = coord)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
