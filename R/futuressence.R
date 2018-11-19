@@ -1,4 +1,4 @@
-#' Calcule les potentialites presentes et futures eds essences forestieres
+#' @title Calcule les potentialites presentes et futures des essences forestieres
 #'
 #' @description La fonction permet de calculer les presences futures des essences forestieres
 #' française
@@ -24,6 +24,8 @@
 #' @importFrom utils head read.csv read.table write.table
 #' @importFrom magrittr %>%
 #'
+#' @return A list of plot and table.
+#'
 #' @examples
 #'
 #' ### Calcul sur un shapefile multipolygones
@@ -48,6 +50,7 @@
 #' res$stressogramme
 #' }
 #'
+
 futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {
     # ETAPE 1 ################################################################################### Import de la base de calcul
 

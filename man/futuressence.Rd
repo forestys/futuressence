@@ -27,6 +27,8 @@ futuressence(fgeo = NULL, enreg = F, rep_travail = tempdir(),
 }
 \value{
 La fonction renvoie un tableau, des graphes et des cartes
+
+A list of plot and table.
 }
 \description{
 La fonction permet de calculer les presences futures des essences forestieres
