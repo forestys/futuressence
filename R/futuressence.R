@@ -93,7 +93,8 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
     for (i in 1:length(listnom)) {
         rast <- raster(listacces[i])
         projection(rast) <- projLII
-        tableraster[, i] <- extract(x = rast, y = coord)
+        print(projLII)
+        tableraster[, i] <- raster::extract(x = rast, y = coord)
         print(paste0(Sys.time(), " - ", listnom[i]))
     }
 
