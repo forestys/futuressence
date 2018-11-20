@@ -109,8 +109,6 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
   tableraster <- as.data.frame(matrix(data = NA, nrow = nrow(base), ncol = length(listnom)))
   colnames(tableraster) = listnom
 
-  head(tableraster)
-
   # Cree le raster pour le rum
   for (i in 1:length(listnom)) {
       rast <- raster(listacces[i])
