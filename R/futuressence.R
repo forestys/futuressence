@@ -18,7 +18,7 @@
 #' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform st_buffer
 #' @importFrom ggplot2 ggtitle xlab ylab scale_x_log10 scale_y_log10 geom_point geom_abline ggplot aes
 #' @importFrom ggrepel geom_label_repel
-#' @importFrom stats complete.cases median setNames predict
+#' @importFrom stats complete.cases median setNames
 #' @importFrom gam gam
 #' @importFrom methods as
 #' @importFrom utils head read.csv read.table write.table
@@ -116,7 +116,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       rast <- raster(listacces[i])
       raster::projection(rast) <- projLII
       tableraster[, i] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
-      print(paste0(Sys.time(), " - ", listnom[i]))
+      message(paste0(Sys.time(), " - ", listnom[i]))
   }
 
   # Quand rum_terrain est non vide alors remplacer rum_lerfob par rum_terrain
@@ -148,7 +148,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       rast = raster(listacces[i])
       raster::projection(rast) = projLII
       tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
-      print(paste0(Sys.time(), " - ", listnom[i]))
+      message(paste0(Sys.time(), " - ", listnom[i]))
   }
 
   # Quand ph_terrain est non vide alors remplacer ph_lerfob par ph_terrain
@@ -177,7 +177,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       rast = raster(listacces[i])
       raster::projection(rast) = projLII
       tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
-      print(paste0(Sys.time(), " - ", listnom[i]))
+      message(paste0(Sys.time(), " - ", listnom[i]))
   }
 
   # Quand cn_terrain est non vide alors remplacer cn_lerfob par cn_terrain
@@ -205,7 +205,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       rast = raster(listacces[i])
       raster::projection(rast) = projLII
       tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
-      print(paste0(Sys.time(), " - ", listnom[i]))
+      message(paste0(Sys.time(), " - ", listnom[i]))
   }
 
   # Quand et_terrain est non vide alors remplacer et_lerfob par et_terrain
@@ -234,7 +234,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       rast = raster(listacces[i])
       raster::projection(rast) = projLII
       tableraster[, i] = raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
-      print(paste0(Sys.time(), " - ", listnom[i]))
+      message(paste0(Sys.time(), " - ", listnom[i]))
   }
 
   # Quand ep_terrain est non vide alors remplacer ep_lerfob par ep_terrain
@@ -260,7 +260,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
           raster::projection(rast) <- projLII
           base[, col] <- raster::extract(x = rast, y = coord, method='simple', buffer=NULL, small=FALSE, cellnumbers=FALSE, na.rm=TRUE)
           colnames(base)[col] = nomvar
-          print(paste0(Sys.time(), " - ", var, " du mois ", mois, "/12."))
+          message(paste0(Sys.time(), " - ", var, " du mois ", mois, "/12."))
       }
   }
 
@@ -419,7 +419,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
   nb <- 1
 
   for (sp in species) {
-      print(paste0(Sys.time(), " - Calcul pour l'essence : ", sp, " (", nb, "/", length(species), ")."))
+      message(paste0(Sys.time(), " - Calcul pour l'essence : ", sp, " (", nb, "/", length(species), ")."))
       # on evalue l expression du gam
       txt <- paste0(ifelse(sp %in% c("fasy", "piab", "pisy", "qupe", "abal", "acca", "acmo", "acop", "acpl", "acps", "algl", "bepe", "cabe", "casa", "fran", "frex",
           "piha", "prav", "quil", "qupu", "quro", "rops", "saal", "saca", "saci", "soar", "soau", "soto", "tico", "tipl", "ulmi"), " s(tmoy_an,4) +", ""), ifelse(sp %in%
@@ -486,10 +486,10 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       names(RHS_p) <- cacheEnv$nc  # fonction 'names' ds nouvelle version
       names(RHS_f) <- cacheEnv$nc  # fonction 'names' ds nouvelle version
       # Enregistremenet present (p) de la prediction futur (f)
-      Predsp_p <- predict(RHS_p, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_8610.tif")), overwrite = TRUE)
+      Predsp_p <- raster::predict(RHS_p, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_8610.tif")), overwrite = TRUE)
       out[[sp]]$present <- Predsp_p
       out[[sp]]$median_present <- median(values(Predsp_p), na.rm = TRUE)
-      Predsp_f <- predict(RHS_f, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_4665.tif")), overwrite = TRUE)
+      Predsp_f <- raster::predict(RHS_f, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_4665.tif")), overwrite = TRUE)
       out[[sp]]$futur <- Predsp_f
       out[[sp]]$median_futur <- median(values(Predsp_f), na.rm = TRUE)
       # Ratio futur sur present
