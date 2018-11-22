@@ -46,8 +46,13 @@
 #' # afficher le diffenretiel entre present et futur
 #' plot(res$species$quro$fsurp)
 #'
-#' # afficher le stressogramme present-futur
+#' # afficher le stressogramme present-futur de toutes les essences
 #' res$stressogramme
+#'
+#' # afficher les quantiles des essences futures sur la zone etudiee
+#' for (i in 1:length(res$species)){
+#' print(paste(res$species[[i]][1], " : p - ", res$species[[i]]$q_present, ", f - ", res$species[[i]]$q_futur, ", fsurp - ", res$species[[i]]$q_fsurp)
+#' }
 #' }
 #' @export
 
@@ -486,14 +491,15 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       # Enregistremenet present (p) de la prediction futur (f)
       Predsp_p <- raster::predict(RHS_p, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_8610.tif")), overwrite = TRUE)
       out[[sp]]$present <- Predsp_p
-      out[[sp]]$median_present <- median(values(Predsp_p), na.rm = TRUE)
+      out[[sp]]$q_present <- quantile(Predsp_p, seq(0,1,0.1), na.rm=TRUE, type=9)
       Predsp_f <- raster::predict(RHS_f, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_4665.tif")), overwrite = TRUE)
       out[[sp]]$futur <- Predsp_f
-      out[[sp]]$median_futur <- median(values(Predsp_f), na.rm = TRUE)
+      out[[sp]]$q_futur <- quantile(Predsp_f, seq(0,1,0.1), na.rm=TRUE, type=9)
       # Ratio futur sur present
       fsurp <- Predsp_f/Predsp_p
       writeRaster(fsurp, filename=file.path(dossier_save, paste0(sp, "_tendance.tif")), format="GTiff", overwrite=TRUE)
       out[[sp]]$fsurp <- fsurp
+      out[[sp]]$q_fsurp <- quantile(fsurp, seq(0,1,0.1), na.rm=TRUE, type=9)
       nb <- nb + 1
       # Save en tif writeRaster(fsurp, filename = paste0(rep_projet, '/tendance_', sp, '.tif'), format='GTiff', overwrite=TRUE)
   }
