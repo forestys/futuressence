@@ -50,7 +50,7 @@
 #' res$stressogramme
 #'
 #' # afficher les quantiles futur de fasy sur la zone etudiee
-#' print(res$species$fasy$q_futur)
+#' res$species$fasy$quantile_futur
 #'
 #' }
 #'
