@@ -405,7 +405,7 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
   r_ep <- rasterFromXYZ(base[, c("Xl2", "Yl2", "ep")], crs = crs_l2)
 
   # Enregistrement des resultats
-  dossier_save = paste0(rep_travail, "/2046_2065")
+  dossier_save = paste0(rep_projet, "/2046_2065")
   if (!dir.exists(dossier_save)) {
     dir.create(dossier_save, showWarnings = TRUE, recursive = TRUE, mode = "0777")
     message(paste0("Directory is created in: ", dossier_save))
@@ -491,7 +491,9 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       out[[sp]]$futur <- Predsp_f
       out[[sp]]$median_futur <- median(values(Predsp_f), na.rm = TRUE)
       # Ratio futur sur present
-      out[[sp]]$fsurp <- Predsp_f/Predsp_p
+      fsurp <- Predsp_f/Predsp_p
+      writeRaster(fsurp, filename=file.path(dossier_save, paste0(sp, "_tendance.tif")), format="GTiff", overwrite=TRUE)
+      out[[sp]]$fsurp <- fsurp
       nb <- nb + 1
       # Save en tif writeRaster(fsurp, filename = paste0(rep_projet, '/tendance_', sp, '.tif'), format='GTiff', overwrite=TRUE)
   }
