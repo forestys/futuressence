@@ -13,7 +13,7 @@
 #' @param buffer = 100 par defaut, specifie le buffer en unite de projection realise sur la zone de calcul
 #'
 #' @return La fonction renvoie un tableau, des graphes et des cartes
-#' @importFrom raster rasterize rasterFromXYZ rasterToPoints projection raster crs values
+#' @importFrom raster rasterize rasterFromXYZ rasterToPoints projection raster crs values quantile writeRaster
 #' @importFrom dplyr select
 #' @importFrom sf st_coordinates st_crs st_intersects st_polygon st_read st_bbox st_as_sfc st_transform st_buffer
 #' @importFrom ggplot2 ggtitle xlab ylab scale_x_log10 scale_y_log10 geom_point geom_abline ggplot aes
@@ -49,11 +49,11 @@
 #' # afficher le stressogramme present-futur de toutes les essences
 #' res$stressogramme
 #'
-#' # afficher les quantiles des essences futures sur la zone etudiee
-#' for (i in 1:length(res$species)){
-#' print(paste(res$species[[i]][1], " : p - ", res$species[[i]]$q_present, ", f - ", res$species[[i]]$q_futur, ", fsurp - ", res$species[[i]]$q_fsurp)
+#' # afficher les quantiles futur de fasy sur la zone etudiee
+#' print(res$species$fasy$q_futur)
+#'
 #' }
-#' }
+#'
 #' @export
 
 futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_projet = NULL, rep_data = NULL, rep_clim = NULL, resol_grid = 10, buffer = 100) {

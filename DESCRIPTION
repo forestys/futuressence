@@ -1,7 +1,7 @@
 Package: futuressence
 Type: Package
 Title: Create carto and table for forests species
-Version: 0.3.8.9000
+Version: 0.4.0.9000
 Date: 2018-11-16
 Depends: R (>= 3.0.0), sf (>= 0.7-1), ggplot2 (>= 3.1.0), dplyr (>= 0.7.8), raster (>= 2.8-4), gam (>= 1.16)
 Suggests: devtools

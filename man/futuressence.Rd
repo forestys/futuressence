@@ -54,7 +54,12 @@ plot(res$species$quro$futur)
 # afficher le diffenretiel entre present et futur
 plot(res$species$quro$fsurp)
 
-# afficher le stressogramme present-futur
+# afficher le stressogramme present-futur de toutes les essences
 res$stressogramme
+
+# afficher les quantiles futur de fasy sur la zone etudiee
+print(res$species$fasy$q_futur)
+
 }
+
 }
