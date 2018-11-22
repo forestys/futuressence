@@ -491,17 +491,18 @@ futuressence <- function(fgeo = NULL, enreg = F, rep_travail = tempdir(), rep_pr
       # Enregistremenet present (p) de la prediction futur (f)
       Predsp_p <- raster::predict(RHS_p, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_8610.tif")), overwrite = TRUE)
       out[[sp]]$present <- Predsp_p
-      out[[sp]]$q_present <- quantile(Predsp_p, seq(0,1,0.1), na.rm=TRUE, type=9)
+      out[[sp]]$median_present <- median(Predsp_p, na.rm=TRUE)
+      out[[sp]]$quantile_present <- quantile(Predsp_p, seq(0,1,0.1), na.rm=TRUE, type=9)
       Predsp_f <- raster::predict(RHS_f, cacheEnv$gamdf, type = "response", progress = "text", filename = file.path(dossier_save, paste0(sp, "_4665.tif")), overwrite = TRUE)
       out[[sp]]$futur <- Predsp_f
-      out[[sp]]$q_futur <- quantile(Predsp_f, seq(0,1,0.1), na.rm=TRUE, type=9)
+      out[[sp]]$median_futur <- median(Predsp_f, na.rm=TRUE)
+      out[[sp]]$quantile_futur <- quantile(Predsp_f, seq(0,1,0.1), na.rm=TRUE, type=9)
       # Ratio futur sur present
       fsurp <- Predsp_f/Predsp_p
       writeRaster(fsurp, filename=file.path(dossier_save, paste0(sp, "_tendance.tif")), format="GTiff", overwrite=TRUE)
       out[[sp]]$fsurp <- fsurp
-      out[[sp]]$q_fsurp <- quantile(fsurp, seq(0,1,0.1), na.rm=TRUE, type=9)
+      out[[sp]]$quantile_fsurp <- quantile(fsurp, seq(0,1,0.1), na.rm=TRUE, type=9)
       nb <- nb + 1
-      # Save en tif writeRaster(fsurp, filename = paste0(rep_projet, '/tendance_', sp, '.tif'), format='GTiff', overwrite=TRUE)
   }
 
   df <- NULL
